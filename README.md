@@ -1,29 +1,39 @@
-# README #
+# Meld/IOL2 Sandbox Mysql Image
 
-This README would normally document whatever steps are necessary to get your application up and running.
+base image =>  mysql:5.7
 
-### What is this repository for? ###
 
-* Quick summary
-* Version
-* [Learn Markdown](https://bitbucket.org/tutorials/markdowndemo)
+## Requirement
 
-### How do I get set up? ###
+Authenticated docker client to AWS Elastic Container Register(ECS)
 
-* Summary of set up
-* Configuration
-* Dependencies
-* Database configuration
-* How to run tests
-* Deployment instructions
+```console
+#!/bin/bash
+ACCOUNT='745222113226'   #iol-community account
 
-### Contribution guidelines ###
+cliversion=$(aws --version)
+[[ $cliversion = aws-cli/1* ]] && aws ecr get-login --no-include-email --region us-east-1 | source /dev/stdin
+[[ $cliversion = aws-cli/2* ]] && aws ecr get-login-password --profile $1| docker login --username AWS --password-stdin  ${ACCOUNT}.dkr.ecr.us-east-1.amazonaws.com
 
-* Writing tests
-* Code review
-* Other guidelines
+```
 
-### Who do I talk to? ###
 
-* Repo owner or admin
-* Other community or team contact
+## Environment Variables
+
+| Name | Required | Default |
+|-----|------|---------|
+|MYSQL_ROOT_PASSWORD|Yes|``|
+|BILIRUBIN_RISK_CHART_HOST|Yes|`https://iol2-bilirubin-risk-chart.interop.community`|
+|CONTENT_HOST|Yes|`https://iol2content.interop.community`|
+|PATIENT_DATA_MANAGER_HOST|Yes|`https://iol2patient-data-manager.interop.community`|
+
+
+## Utility Script to rebuild and push newer image to ECS
+
+```console
+chmod u+x update.sh
+./update.sh
+```
+
+
+
